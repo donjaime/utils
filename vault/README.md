@@ -12,4 +12,6 @@ genpasswd() {
 ```
 
 You can use it to generate passwords of a specified length (in this case 12 characters) like:
-`genpasswd 12`
+```
+genpasswd 12
+```
