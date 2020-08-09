@@ -41,7 +41,7 @@ then
 
   # Decrypt vault file.
   PLAIN_TEXT_FILENAME="$PLAIN_TEXT_DIR/plaintext.tar.gz"
-  openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -d -in "$NEWEST_VAULT" -out "$PLAIN_TEXT_FILENAME"
+  openssl enc -aes-256-cbc -md sha512 -salt -d -in "$NEWEST_VAULT" -out "$PLAIN_TEXT_FILENAME"
 
   echo -e "${GREEN}Decompressing:${NC}"
   tar -xzvf "$PLAIN_TEXT_FILENAME"

@@ -27,7 +27,7 @@ echo -e "${GREEN}Compressing:${NC}"
 tar -C "$PLAIN_TEXT_DIR" -czvf "$PLAIN_TEXT_FILENAME" .
 
 echo -e "${GREEN}Encrypting:${NC}"
-openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "$PLAIN_TEXT_FILENAME" -out "$ENC_FILE_NAME"
+openssl enc -aes-256-cbc -md sha512 -salt -in "$PLAIN_TEXT_FILENAME" -out "$ENC_FILE_NAME"
 rm "$PLAIN_TEXT_FILENAME"
 
 echo "Done"
