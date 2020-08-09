@@ -1,0 +1,33 @@
+#!/bin/bash
+
+VAULT_DIR="$1"
+PLAIN_TEXT_DIR=$(pwd)
+
+# Validate arguments
+if [ ! -n "$VAULT_DIR" ]
+then
+  echo "Encrypted output dir argument is missing"
+  exit 1
+fi
+
+# Check folder existence
+if [ ! -d "$VAULT_DIR" ]; then
+  echo "Vault dir \"$VAULT_DIR\" does not exists. Please create it."
+  exit 1
+fi
+
+# Bundle, compress, and encrypt the plain text folder.
+# Write a timestamped encrypted file to the vault directory.
+PLAIN_TEXT_FILENAME="$VAULT_DIR/plaintext.tar.gz"
+ENC_FILE_NAME="$VAULT_DIR/vault-$(date +%Y%m%dT%H%M%S)"
+
+GREEN='\033[0;32m'
+NC='\033[0m' # No Color
+echo -e "${GREEN}Compressing:${NC}"
+tar -C "$PLAIN_TEXT_DIR" -czvf "$PLAIN_TEXT_FILENAME" .
+
+echo -e "${GREEN}Encrypting:${NC}"
+openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -in "$PLAIN_TEXT_FILENAME" -out "$ENC_FILE_NAME"
+rm "$PLAIN_TEXT_FILENAME"
+
+echo "Done"

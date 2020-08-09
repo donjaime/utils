@@ -1,0 +1,6 @@
+*.enc
+*plain_text*
+*~
+#*
+vault/
+secrets/

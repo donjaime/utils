@@ -1,0 +1,55 @@
+#!/bin/bash
+
+PLAIN_TEXT_DIR=$(pwd)
+
+# Make sure the pass at least one arg
+if [ ! -n "$1" ]
+then
+  echo "vrestore takes at least one argument (the vault directory or specific vault file you wish to restore)"
+  exit 1
+fi
+
+# Initialize from file if it's a file.
+if [ -f "$1" ]
+then
+  # Was a file. Initialize the file.
+  NEWEST_VAULT="$1"
+else
+  # Must be a directory. Check folder existence
+  VAULT_DIR="$1"
+  if [ ! -d "$VAULT_DIR" ]; then
+    echo "Vault dir \"$VAULT_DIR\" does not exists. Please create it."
+    exit 1
+  fi
+
+  # Locate the newest vault file in the vault dir.
+  NEWEST_VAULT=$(find "$VAULT_DIR"/vault-* -type f | sort -r | head -n 1)
+  if [ ! -n "$NEWEST_VAULT" ]
+  then
+    echo "No vault files found at $VAULT_DIR"
+    exit 1
+  fi
+fi
+
+echo "Warning! This will overwrite the contents of the current folder with the decrypted and extracted contents of $NEWEST_VAULT"
+read -p "'y' to proceed. 'n' to abort [y]: " answer
+if [[ $answer = "y" ]] || [ ! -n "$answer" ]
+then
+  GREEN='\033[0;32m'
+  NC='\033[0m' # No Color
+  echo -e "${GREEN}Decrypting:${NC}"
+
+  # Decrypt vault file.
+  PLAIN_TEXT_FILENAME="$PLAIN_TEXT_DIR/plaintext.tar.gz"
+  openssl enc -aes-256-cbc -md sha512 -pbkdf2 -iter 100000 -salt -d -in "$NEWEST_VAULT" -out "$PLAIN_TEXT_FILENAME"
+
+  echo -e "${GREEN}Decompressing:${NC}"
+  tar -xzvf "$PLAIN_TEXT_FILENAME"
+  rm "$PLAIN_TEXT_FILENAME"
+
+else
+  echo "Aborted. Doing nothing..."
+  exit 0
+fi
+
+echo "Done"

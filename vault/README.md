@@ -6,7 +6,7 @@ Simple local secrets management.
 
 - Pick a folder to contain your vault (I recommend an encrypted disk image that you can easily automate the backing up of).
 - `cd` into that folder. Let's call that your "vault folder".
-- Intall the scripts: Copy `open.sh` and `seal.sh` into your vault folder.
+- Install the scripts: Copy `open.sh` and `seal.sh` into your vault folder.
 - Put your secrets in a file `vault.plain_text` in the vault folder.
 - Seal your vault by running `seal.sh`.
 
